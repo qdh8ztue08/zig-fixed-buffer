@@ -1,0 +1,14 @@
+.{
+    .name = .zig_fixed_buffer,
+    .version = "0.1.0",
+    .fingerprint = 0x2af0d1dded0c2dd5,
+    .minimum_zig_version = "0.17.1",
+    .dependencies = .{},
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "README.md",
+        "LICENSE",
+    },
+}
