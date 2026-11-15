@@ -36,4 +36,17 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_lib_tests.step);
     test_step.dependOn(&run_exe_tests.step);
+
+    inline for ([_][]const u8{ "hex", "base64" }) |name| {
+        const enc_tests = b.addTest(.{
+            .root_module = b.createModule(.{
+                .root_source_file = b.path("src/enc/" ++ name ++ ".zig"),
+                .target = target,
+                .imports = &.{
+                    .{ .name = "fixed_buffer", .module = fixed },
+                },
+            }),
+        });
+        test_step.dependOn(&b.addRunArtifact(enc_tests).step);
+    }
 }

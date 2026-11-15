@@ -76,6 +76,18 @@ hdr.commit(&w);
 `append` / `appendSlice` / `appendByteNTimes` return `error.NoSpaceLeft` when
 the write does not fit.
 
+## Encodings
+
+`src/enc/hex.zig` (`encodeUpper`, `encodeLower`, `decode`) and
+`src/enc/base64.zig` (`encode`, `decode`) write into a `FixedBuf` tail. Both
+compute the full encoded length first and return `error.NoSpaceLeft` before
+touching the buffer, so a short tail never leaves a half-written payload.
+
+```zig
+try hex.encodeUpper(&hdr, tag_bytes);          // 2 bytes per input byte
+const raw = try hex.decode(&raw_buf, hdr.written());
+```
+
 ## API
 
 - `FixedBuf(capacity, alignment)` — type constructor, all checks comptime
@@ -92,6 +104,8 @@ build.zig              module `fixed_buffer`, `fbuf` demo, test step
 build.zig.zon          package manifest, pinned minimum Zig version
 src/fixed_buffer.zig   the buffer type and its tests
 src/main.zig           512-byte argv joiner used as a smoke test
+src/enc/hex.zig        hex codec over `FixedBuf`
+src/enc/base64.zig     standard base64 codec over `FixedBuf`
 ```
 
 ```sh
